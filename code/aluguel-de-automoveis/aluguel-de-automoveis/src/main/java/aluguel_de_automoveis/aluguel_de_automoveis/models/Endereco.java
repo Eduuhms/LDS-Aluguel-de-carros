@@ -1,5 +1,7 @@
 package aluguel_de_automoveis.aluguel_de_automoveis.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -38,5 +40,6 @@ public class Endereco {
     @MapsId // Indica que o ID será mapeado a partir do Cliente
     @OneToOne
     @JoinColumn(name = "cliente_cpf", referencedColumnName = "cpf")
+    @JsonBackReference
     private Cliente cliente;
 }
