@@ -1,8 +1,9 @@
 package aluguel_de_automoveis.aluguel_de_automoveis.controllers;
 
 import aluguel_de_automoveis.aluguel_de_automoveis.models.Cliente;
-import aluguel_de_automoveis.aluguel_de_automoveis.repositories.ClienteRepository;
+import aluguel_de_automoveis.aluguel_de_automoveis.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,37 +14,37 @@ import java.util.Optional;
 public class ClienteController {
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private ClienteService clienteService;
 
-    // READ - Listar todos
     @GetMapping
-    public List<Cliente> listarClientes() {
-        return clienteRepository.findAll();
+    public List<Cliente> listarTodos() {
+        return clienteService.listarTodos();
     }
 
-    // READ - Buscar por ID
-    @GetMapping("/{id}")
-    public Optional<Cliente> buscarCliente(@PathVariable Long id) {
-        return clienteRepository.findById(id);
+    @GetMapping("/{cpf}")
+    public ResponseEntity<Cliente> buscarPorCpf(@PathVariable String cpf) {
+        Optional<Cliente> cliente = clienteService.buscarPorCpf(cpf);
+        return cliente.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // CREATE - Criar novo cliente
     @PostMapping
-    public Cliente criarCliente(@RequestBody Cliente cliente) {
-        return clienteRepository.save(cliente);
+    public Cliente criar(@RequestBody Cliente cliente) {
+        return clienteService.salvar(cliente);
     }
 
-    // UPDATE - Atualizar cliente
-    @PutMapping("/{id}")
-    public Cliente atualizarCliente(@PathVariable Long id, @RequestBody Cliente dados) {
-        Cliente cliente = clienteRepository.findById(id).orElseThrow();
-        cliente.setNome(dados.getNome());
-        return clienteRepository.save(cliente);
+    @PutMapping("/{cpf}")
+    public ResponseEntity<Cliente> atualizar(@PathVariable String cpf, @RequestBody Cliente cliente) {
+        try {
+            Cliente atualizado = clienteService.atualizar(cpf, cliente);
+            return ResponseEntity.ok(atualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // DELETE - Remover cliente
-    @DeleteMapping("/{id}")
-    public void deletarCliente(@PathVariable Long id) {
-        clienteRepository.deleteById(id);
+    @DeleteMapping("/{cpf}")
+    public ResponseEntity<Void> deletar(@PathVariable String cpf) {
+        clienteService.deletar(cpf);
+        return ResponseEntity.noContent().build();
     }
 }
