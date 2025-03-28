@@ -1,5 +1,3 @@
-```code
-
 @startuml
 left to right direction
 
@@ -20,24 +18,25 @@ rectangle "Sistema de Aluguel de Automóveis" {
         a --> (Analisar pedidos)
 
 
+
         (Analisar pedidos) --> (Aprovar Pedido)
-        (Aprovar Pedido) --> (Executar Contrato)
+        (Aprovar Pedido) --> (Gerar Contrato)
 
 
         (Registrar Automóvel) as r
-        (Registrar Automóvel como propriedade do cliente) .> r : include
-        (Registrar Automóvel como propriedade do empresa) .> r : include
-        (Registrar Automóvel como propriedade do banco) .> r : include
+        (Registrar Automóvel como propriedade do cliente) --|> r
+        (Registrar Automóvel como propriedade do empresa) --|> r
+        (Registrar Automóvel como propriedade do banco) --|> r
         ae --> r
 
-        ae --> (Gerar Contrato)
+        c --> (Pedir Emprestimo)
+        (Pedir Emprestimo) -->ab
+
+        ab--> (Aprovar Emprestimo)
 
 }
         u <|-- c
         u <|-- a
         a <|-- ae
         a <|-- ab
-
 @enduml
-
-```
