@@ -1,19 +1,11 @@
 ```code
 
 @startuml
-
 package "Sistema de Aluguel" {
-    package "Gestão de Pedidos e Contratos" {
+    package "Modelo" {
         class Pedido
         class Contrato
-        interface Crud
-    }
-    
-    package "Gestão de Automóveis" {
         class Automovel
-    }
-    
-    package "Gestão de Usuários" {
         abstract Usuario
         class Cliente
         abstract Agente
@@ -21,18 +13,20 @@ package "Sistema de Aluguel" {
         class Empresa
     }
     
-    package "Construção Dinâmica de Páginas Web" {
-        package "MVC" {
-            class Modelo
-            class Visao
-            class Controle
-        }
+    package "Visao" {
+        class VisaoPedido
+        class VisaoContrato
+        class VisaoAutomovel
+        class VisaoUsuario
     }
     
-    package "Infraestrutura" {
-        class ServidorCentral
-        class ComputadoresLocais
+    package "Controle" {
+        class ControlePedido
+        class ControleContrato
+        class ControleAutomovel
+        class ControleUsuario
     }
+    
 }
 
 Usuario <|-- Cliente
@@ -47,16 +41,21 @@ Contrato "1" -- "0..1" Agente
 Contrato "1" -- "1" Pedido
 Banco "0..*" -- "1" Cliente
 
-ServidorCentral -- ComputadoresLocais : Conexão via Internet
 
 Modelo -- Controle
 Controle -- Visao
 Visao -- Modelo
 
-Usuario <|.. Crud
-Contrato <|.. Crud
-Pedido <|.. Crud
-Automovel <|.. Crud
+ControlePedido -- Pedido
+ControleContrato -- Contrato
+ControleAutomovel -- Automovel
+ControleUsuario -- Usuario
+
+VisaoPedido -- Pedido
+VisaoContrato -- Contrato
+VisaoAutomovel -- Automovel
+VisaoUsuario -- Usuario
+@enduml
 
 @enduml
 
