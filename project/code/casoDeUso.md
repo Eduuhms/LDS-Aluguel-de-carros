@@ -1,3 +1,5 @@
+```code
+
 @startuml
 left to right direction
 
@@ -40,3 +42,5 @@ rectangle "Sistema de Aluguel de Automóveis" {
         a <|-- ae
         a <|-- ab
 @enduml
+
+```
