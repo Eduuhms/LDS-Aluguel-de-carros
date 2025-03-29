@@ -20,10 +20,9 @@ abstract "Usuario" {
 class "Cliente" {
     - rg: String 
     - cpf: String 
-    - endereco: String 
     - profissao: String 
-    - rendimentosAuferidos: List<Double> 
-    - int MAX_RENDIMENTOS_AUFERIDOS
+    - rendimentosAuferidos: List<Rendimento> 
+    - MAX_RENDIMENTOS_AUFERIDOS : const int = 3
     - agentes: List<Agente> 
     + modificarPedido(Pedido pedido): void 
     + introduzirPedido(): void 
@@ -65,6 +64,18 @@ class "Pedido" {
     - veiculo : Veiculo
 }
 
+class "Empregador" {
+    - cnpj: String
+    - nome: String
+    - setor : String
+}
+
+class "Rendimento" {
+    - valor: Double
+    - cliente : Cliente
+    - empregador: Empregador
+}
+
 interface "Crud" {
     + apagar() : void
     + registrar() : void
@@ -73,17 +84,29 @@ interface "Crud" {
     + preencher() : void
 }
 
+class "Endereco"{
+    - cliente: Cliente
+    - bairro : String
+    - rua : String
+    - numero : Integer
+    - cep : String
+}
+
 "Usuario" <|-- "Cliente"
 "Usuario" <|-- "Agente"
 "Agente" <|-- "Banco"
 "Agente" <|-- "Empresa"
 
 "Cliente" -- "Pedido"
+"Cliente" -- "Endereco"
 "Automovel" -- "Pedido"
 
 "Contrato" -- "Usuario"
 "Contrato" -- "Automovel"
 "Contrato" -- "Cliente"
+
+"Cliente" -- "Rendimento"
+"Empregador" -- "Rendimento"
 
 "Usuario" <|.. "Crud"
 "Contrato" <|.. "Crud"
@@ -91,5 +114,6 @@ interface "Crud" {
 "Automovel" <|.. "Crud"
 
 @enduml
+
 
 ```
