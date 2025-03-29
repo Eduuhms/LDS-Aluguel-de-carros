@@ -57,11 +57,14 @@ public class ClienteService {
                     if (clienteAtualizado.getRendimentos().size() > 3) {
                         throw new RuntimeException("O cliente não pode ter mais de 3 rendimentos.");
                     }
-
-                    for (Rendimento rendimento : clienteAtualizado.getRendimentos()) {
-                        rendimento.setCliente(cliente);
+                    
+                    if (clienteAtualizado.getRendimentos() != null){
+                        for (Rendimento rendimento : clienteAtualizado.getRendimentos()) {
+                            rendimento.setCliente(cliente);
+                        }
+                        cliente.setRendimentos(clienteAtualizado.getRendimentos());
                     }
-                    cliente.setRendimentos(clienteAtualizado.getRendimentos());
+
 
                     return clienteRepository.save(cliente);
                 }).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
