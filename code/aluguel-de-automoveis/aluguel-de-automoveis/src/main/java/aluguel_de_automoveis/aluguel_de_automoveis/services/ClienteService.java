@@ -32,9 +32,11 @@ public class ClienteService {
             throw new RuntimeException("O cliente não pode ter mais de 3 rendimentos.");
         }
 
-        for (Rendimento rendimento : cliente.getRendimentos()) {
-            rendimento.setCliente(cliente);
-        }
+        if (cliente.getRendimentos() != null){
+            for (Rendimento rendimento : cliente.getRendimentos()) {
+                rendimento.setCliente(cliente);
+            }
+        }        
 
         return clienteRepository.save(cliente);
     }
