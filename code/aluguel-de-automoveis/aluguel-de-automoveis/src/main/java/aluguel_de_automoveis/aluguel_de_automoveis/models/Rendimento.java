@@ -1,5 +1,8 @@
 package aluguel_de_automoveis.aluguel_de_automoveis.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +28,7 @@ public class Rendimento {
     private Long id;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 

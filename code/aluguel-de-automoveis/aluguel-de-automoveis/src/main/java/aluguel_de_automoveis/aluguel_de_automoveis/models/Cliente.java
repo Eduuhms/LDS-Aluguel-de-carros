@@ -37,6 +37,7 @@ public class Cliente {
     private String profissao;
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Rendimento> rendimentos;
 
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)

@@ -29,6 +29,7 @@ public class ClienteController {
 
     @PostMapping
     public Cliente criar(@RequestBody Cliente cliente) {
+        System.out.println("aqui");
         return clienteService.salvar(cliente);
     }
 

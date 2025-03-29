@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import aluguel_de_automoveis.aluguel_de_automoveis.models.Cliente;
+import aluguel_de_automoveis.aluguel_de_automoveis.models.Rendimento;
 import aluguel_de_automoveis.aluguel_de_automoveis.repositories.ClienteRepository;
 
 @Service
@@ -27,6 +28,14 @@ public class ClienteService {
         if (cliente.getEndereco() != null) {
             cliente.getEndereco().setCliente(cliente);
         }
+       if (cliente.getRendimentos() != null && cliente.getRendimentos().size() > 3) {
+            throw new RuntimeException("O cliente não pode ter mais de 3 rendimentos.");
+        }
+
+        for (Rendimento rendimento : cliente.getRendimentos()) {
+            rendimento.setCliente(cliente);
+        }
+
         return clienteRepository.save(cliente);
     }
 
@@ -36,8 +45,22 @@ public class ClienteService {
                     cliente.setNome(clienteAtualizado.getNome());
                     cliente.setRg(clienteAtualizado.getRg());
                     cliente.setProfissao(clienteAtualizado.getProfissao());
-                    cliente.setEndereco(clienteAtualizado.getEndereco());
+                    // Atualiza endereço corretamente
+                    if (clienteAtualizado.getEndereco() != null) {
+                        clienteAtualizado.getEndereco().setCliente(cliente);
+                        cliente.setEndereco(clienteAtualizado.getEndereco());
+                    }
+
+                    // Atualiza rendimentos garantindo que não ultrapassem o limite de 3
+                    if (clienteAtualizado.getRendimentos().size() > 3) {
+                        throw new RuntimeException("O cliente não pode ter mais de 3 rendimentos.");
+                    }
+
+                    for (Rendimento rendimento : clienteAtualizado.getRendimentos()) {
+                        rendimento.setCliente(cliente);
+                    }
                     cliente.setRendimentos(clienteAtualizado.getRendimentos());
+
                     return clienteRepository.save(cliente);
                 }).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
     }
