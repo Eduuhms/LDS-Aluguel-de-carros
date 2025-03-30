@@ -76,14 +76,6 @@ class "Rendimento" {
     - empregador: Empregador
 }
 
-interface "Crud" {
-    + apagar() : void
-    + registrar() : void
-    + editar() : void
-    + pesquisar() : void
-    + preencher() : void
-}
-
 class "Endereco"{
     - cliente: Cliente
     - bairro : String
@@ -108,12 +100,8 @@ class "Endereco"{
 "Cliente" -- "Rendimento"
 "Empregador" -- "Rendimento"
 
-"Usuario" <|.. "Crud"
-"Contrato" <|.. "Crud"
-"Pedido" <|.. "Crud"
-"Automovel" <|.. "Crud"
-
 @enduml
+
 
 
 ```
