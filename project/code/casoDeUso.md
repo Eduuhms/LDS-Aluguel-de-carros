@@ -36,6 +36,8 @@ rectangle "Sistema de Aluguel de Automóveis" {
 
         ab--> (Aprovar Emprestimo)
 
+        u--> (Fazer Login)
+
 }
         u <|-- c
         u <|-- a

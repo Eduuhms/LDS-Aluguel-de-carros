@@ -17,3 +17,4 @@
 - Como Agente do Banco, quero aprovar emprestimo para liberar dinheiro para o cliente.
 
 - Como Usuário, quero modificar pedidos de aluguel para atualizar informações.
+- Como Usuário, quero consultar fazer login para acessar minha conta.
