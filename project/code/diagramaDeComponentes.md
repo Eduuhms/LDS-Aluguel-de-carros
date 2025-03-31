@@ -1,23 +1,21 @@
 ```code
 
 @startuml
-title Diagrama de Componentes - Sistema de Aluguel de Automóveis
+title Diagrama de Componentes - Sistema de Aluguel de Automóveis (Modificado)
 
 ' === Componentes Principais ===
 component "Navegador Web" as web
 
 component "Frontend" as Frontend 
 
-component "Backend (Java)" as Backend 
+component "Backend (Java)" as Backend {
+    component "Sistema de Gestão de Pedidos" as GestaoPedidos
+    component "Sistema de Gestão de Contratos" as GestaoContratos
+    component "Sistema de Gestão de Automóveis" as GestaoAutomoveis
+    component "Sistema de Gestão de Usuários" as GestaoUsuarios
+}
 
 component "Banco de Dados (MySQL)" as Database 
-
-component "Sistema de Gestão de Pedidos e Contratos" as GestaoPedidosContratos
-
-component "Sistema de Gestão de Automóveis" as GestaoAutomoveis
-
-component "Sistema de Gestão de Usuários" as GestaoUsuarios
-
 
 ' === Interfaces ===
 interface "API" as api
@@ -30,12 +28,11 @@ api -- Backend
 
 Backend ..> Database : "CRUD (MySQL)"
 
-Backend ..> GestaoPedidosContratos : "Gerencia Pedidos e Contratos"
-Backend ..> GestaoAutomoveis : "Gerencia Automóveis"
-Backend ..> GestaoUsuarios : "Gerencia Usuários"
-
-GestaoPedidosContratos ..> GestaoAutomoveis : "Relaciona Veículos aos Contratos"
-GestaoPedidosContratos ..> GestaoUsuarios : "Relaciona Clientes e Agentes"
+' Relações entre os subsistemas
+GestaoPedidos ..> GestaoContratos : "Gera"
+GestaoContratos ..> GestaoAutomoveis : "Vincula veículos"
+GestaoContratos ..> GestaoUsuarios : "Vincula clientes/agentes"
+GestaoPedidos ..> GestaoUsuarios : "Verifica permissões"
 @enduml
 
 ```
