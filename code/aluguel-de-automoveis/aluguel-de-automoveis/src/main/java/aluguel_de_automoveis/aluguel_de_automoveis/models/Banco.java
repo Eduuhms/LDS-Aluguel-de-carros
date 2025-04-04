@@ -7,5 +7,5 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class AgenteEmpresa extends Agente {
+public class Banco extends Agente {
 }
