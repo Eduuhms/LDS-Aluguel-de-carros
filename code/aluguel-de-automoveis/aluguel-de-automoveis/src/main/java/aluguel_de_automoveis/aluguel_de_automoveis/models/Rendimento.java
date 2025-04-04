@@ -2,7 +2,10 @@ package aluguel_de_automoveis.aluguel_de_automoveis.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,12 +31,12 @@ public class Rendimento {
     private Long id;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "cliente_id", nullable = false)
+    @JsonIgnore
     private Cliente cliente;
 
-    @ManyToOne
     @JoinColumn(name = "empregador_cnpj", referencedColumnName = "cnpj")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private Empregador empregador;
 
     private Double valor;

@@ -1,9 +1,13 @@
 package aluguel_de_automoveis.aluguel_de_automoveis.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
@@ -23,7 +27,8 @@ import lombok.Setter;
 public class Endereco {
 
     @Id
-    private String clienteCpf; // Mesmo ID do Cliente
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String bairro;
@@ -37,9 +42,8 @@ public class Endereco {
     @Column(nullable = false, length = 9)
     private String cep;
 
-    @MapsId // Indica que o ID será mapeado a partir do Cliente
     @OneToOne
-    @JoinColumn(name = "cliente_cpf", referencedColumnName = "cpf")
-    @JsonBackReference
+    @JoinColumn(name = "cliente_id")
+    @JsonIgnore
     private Cliente cliente;
 }

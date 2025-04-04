@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import aluguel_de_automoveis.aluguel_de_automoveis.models.Endereco;
 
 @Repository
-public interface EnderecoRepository extends JpaRepository<Endereco, String> {
+public interface EnderecoRepository extends JpaRepository<Endereco, Long> {
 }
