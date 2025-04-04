@@ -1,5 +1,7 @@
 package aluguel_de_automoveis.aluguel_de_automoveis.models;
 
+import aluguel_de_automoveis.aluguel_de_automoveis.enums.TipoContrato;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,9 +35,4 @@ public class Contrato {
     @ManyToOne
     @JoinColumn(name = "proprietario_id", nullable = false)
     private Usuario proprietario;
-}
-
-enum TipoContrato {
-    NORMAL,
-    CRÉDITO
 }

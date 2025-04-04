@@ -1,5 +1,6 @@
 package aluguel_de_automoveis.aluguel_de_automoveis.controllers;
 
+import aluguel_de_automoveis.aluguel_de_automoveis.dto.ContratoDTO;
 import aluguel_de_automoveis.aluguel_de_automoveis.models.Contrato;
 import aluguel_de_automoveis.aluguel_de_automoveis.services.ContratoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +30,19 @@ public class ContratoController {
     }
 
     @PostMapping
-    public Contrato criar(@RequestBody Contrato contrato) {
-        return contratoService.salvar(contrato);
+    public ResponseEntity<Contrato> criar(@RequestBody ContratoDTO contratoDTO) {
+        try {
+            Contrato contrato = contratoService.salvarComDTO(contratoDTO);
+            return ResponseEntity.ok(contrato);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Contrato> atualizar(@PathVariable Long id, @RequestBody Contrato contrato) {
+    public ResponseEntity<Contrato> atualizar(@PathVariable Long id, @RequestBody ContratoDTO contratoDTO) {
         try {
-            Contrato atualizado = contratoService.atualizar(id, contrato);
+            Contrato atualizado = contratoService.atualizarComDTO(id, contratoDTO);
             return ResponseEntity.ok(atualizado);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
