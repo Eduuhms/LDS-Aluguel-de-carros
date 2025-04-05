@@ -1,38 +1,36 @@
 package aluguel_de_automoveis.aluguel_de_automoveis.models;
 
 import aluguel_de_automoveis.aluguel_de_automoveis.enums.TipoContrato;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import lombok.Data;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+@Data
 @Entity
-@Table(name = "contratos")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Contrato {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private TipoContrato tipo;
-
+    
     @ManyToOne
-    @JoinColumn(name = "automovel_matricula", nullable = false)
     private Automovel automovel;
-
+    
     @ManyToOne
-    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
-
+    
     @ManyToOne
-    @JoinColumn(name = "proprietario_id", nullable = false)
     private Usuario proprietario;
+    
+    public void registrarPropriedade(Usuario usuario) {
+        this.proprietario = usuario;
+    }
 }

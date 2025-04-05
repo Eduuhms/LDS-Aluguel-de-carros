@@ -1,22 +1,22 @@
 package aluguel_de_automoveis.aluguel_de_automoveis.models;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "clientes")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Cliente extends Usuario {
 
     public static final int MAX_RENDIMENTOS_AUFERIDOS = 3;
@@ -29,11 +29,29 @@ public class Cliente extends Usuario {
 
     private String profissao;
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("cliente")
-    private List<Rendimento> rendimentos;
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Rendimento> rendimentosAuferidos = new ArrayList<>();
 
-    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("cliente")
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Agente> agentes = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
     private Endereco endereco;
+
+    public void modificarPedido(Pedido pedido) {
+        // Implementação específica para cliente
+    }
+
+    public void introduzirPedido() {
+        // Lógica para criar um novo pedido
+    }
+
+    public Pedido consultarPedido(Pedido pedido) {
+        // Lógica para consultar um pedido
+        return pedido;
+    }
+
+    public void cancelarPedido(Pedido pedido) {
+        // Lógica para cancelar um pedido
+    }
 }

@@ -1,10 +1,8 @@
 package aluguel_de_automoveis.aluguel_de_automoveis.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class ContratoDTO {
     private String tipo;
     private String automovelMatricula;

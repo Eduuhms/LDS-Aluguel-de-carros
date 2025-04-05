@@ -1,15 +1,17 @@
 package aluguel_de_automoveis.aluguel_de_automoveis.models;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Getter
-@Setter
-public abstract class Agente extends Usuario {
-
-    @Column(nullable = false, unique = true)
+public class Agente extends Usuario {
+    
     private String cnpj;
+    
+    public void analisarPedidoFinanceiramente(Pedido pedido) {
+        // Lógica para análise financeira do pedido
+    }
 }
