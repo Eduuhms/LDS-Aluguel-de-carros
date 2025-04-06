@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../cadastroVisuCliente/style.css">
+    <title>Hub - Sistema de Clientes</title>
+</head>
+<body>
+    <div class="container">
+        <header class="hub-header">
+            <h1>Bem-vindo, <span id="nomeUsuario"></span>!</h1>
+            <button id="btnLogout" class="btn btn-logout">
+                <span class="logout-icon">🚪</span> Sair
+            </button>
+        </header>
+        
+        <div class="hub-cards">
+            <div class="card" onclick="window.location.href='meus-dados.html'">
+                <h2>Meus Dados</h2>
+                <p>Visualize e edite suas informações cadastrais</p>
+                <div class="card-icon">👤</div>
+            </div>
+            
+            <div class="card" onclick="window.location.href='minhas-operacoes.html'">
+                <h2>Minhas Operações</h2>
+                <p>Acompanhe seu histórico de operações</p>
+                <div class="card-icon">💼</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="hub.js"></script>
+</body>
+</html>

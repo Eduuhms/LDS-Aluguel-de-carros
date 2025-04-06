@@ -7,15 +7,18 @@ node "Computador do usuário" as user_computer {
 
 node "Servidor de aplicação" as app_server {
   component "Frontend" as frontend
-  component "Banco de Dados" as database
+  component "BackEnd" as back
 }
 
-database "Database" as db_storage
+node "Database" as db_storage{
+  component "Banco de dados" as bd
+}
 
-user_computer --> browser
-browser -- app_server : HTTPS
-frontend --> database
-database --> db_storage
+browser ..> frontend
+user_computer --> app_server : HTTPS
+frontend ..> back
+back ..> bd
+app_server --> db_storage
 @enduml
 
 ```

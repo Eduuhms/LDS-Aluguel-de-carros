@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../cadastroVisuCliente/style.css">
+    <title>Login - Sistema de Clientes</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Login do Cliente</h1>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginCpf">CPF:</label>
+                <input type="text" id="loginCpf" name="cpf" required placeholder="Digite seu CPF (somente números)">
+            </div>
+            <div class="form-group">
+                <label for="loginNome">Nome:</label>
+                <input type="text" id="loginNome" name="nome" required placeholder="Digite seu nome completo">
+            </div>
+            <button type="submit" class="btn">Entrar</button>
+            <a href="../cadastroVisuCliente/index.html" class="btn btn-voltar">Voltar</a>
+        </form>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>
