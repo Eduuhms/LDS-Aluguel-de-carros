@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../cadastroVisuCliente/style.css">
+    <title>Alugar Automóvel</title>
+</head>
+<body>
+    <div class="container">
+        <header class="page-header">
+            <button onclick="window.location.href='../hub/hub.html'" class="btn btn-voltar">
+                ← Voltar
+            </button>
+            <h1>Alugar Automóvel</h1>
+        </header>
+
+        <div class="aluguel-container">
+            <!-- Lista de Carros Disponíveis -->
+            <section class="carros-disponiveis">
+                <h2>Carros Disponíveis</h2>
+                <div class="carros-list" id="listaCarros">
+                    <!-- Carros serão carregados via JavaScript -->
+                    <div class="empty-state">
+                        <p>Nenhum carro disponível no momento</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Modal de Aluguel -->
+            <div id="modalAluguel" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <h2>Finalizar Aluguel</h2>
+                    <form id="formAluguel">
+                        <input type="hidden" id="automovelId">
+                        
+                        <div class="info-carro">
+                            <h3 id="modalCarroTitulo"></h3>
+                            <p id="modalCarroDetalhes"></p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Forma de Pagamento:</label>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="pagamento" value="CREDITO" checked>
+                                    Crédito (Aguardando aprovação)
+                                </label>
+                                <label>
+                                    <input type="radio" name="pagamento" value="AVISTA">
+                                    À vista (Aguardando pagamento)
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-confirmar">Confirmar Aluguel</button>
+                            <button type="button" id="btnCancelarAluguel" class="btn btn-cancelar">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="pedidoAluguel.js"></script>
+</body>
+</html>

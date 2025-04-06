@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../cadastroVisuCliente/style.css">
+    <title>Meus Dados</title>
+</head>
+<body>
+    <div class="container">
+        <header class="page-header">
+            <button onclick="window.location.href='../hub/hub.html'" class="btn btn-voltar">
+                ← Voltar
+            </button>
+            <h1>Meus Dados</h1>
+            <div class="header-actions">
+                <button id="btnEditar" class="btn btn-editar">Editar</button>
+                <button id="btnLogout" class="btn btn-logout" style="display: none">Sair</button>
+            </div>
+        </header>
+
+        <div class="dados-container">
+            <section class="dados-pessoais">
+                <h2>Informações Pessoais</h2>
+                <form id="formDados">
+                    <div class="form-group">
+                        <label for="dadoCpf">CPF:</label>
+                        <input type="text" id="dadoCpf" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="dadoNome">Nome Completo:</label>
+                        <input type="text" id="dadoNome" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="dadoProfissao">Profissão:</label>
+                        <input type="text" id="dadoProfissao" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="dadoRg">RG:</label>
+                        <input type="text" id="dadoRg" readonly>
+                    </div>
+                    <div class="form-actions" style="display: none;">
+                        <button type="submit" class="btn btn-salvar">Salvar Alterações</button>
+                        <button type="button" id="btnCancelarEdicao" class="btn btn-cancelar">Cancelar</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="alugueis-section">
+                <h2>Meus Aluguéis</h2>
+                <div class="alugueis-list" id="listaAlugueis">
+                    <!-- Aluguéis serão carregados via JavaScript -->
+                    <div class="empty-state">
+                        <p>Nenhum aluguel encontrado</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="dadosCliente.js"></script>
+</body>
+</html>
