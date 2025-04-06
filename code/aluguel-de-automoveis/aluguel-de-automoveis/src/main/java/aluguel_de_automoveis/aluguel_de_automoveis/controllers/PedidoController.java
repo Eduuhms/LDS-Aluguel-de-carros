@@ -21,6 +21,7 @@ import aluguel_de_automoveis.aluguel_de_automoveis.services.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -58,7 +59,24 @@ public class PedidoController {
     @ApiResponse(responseCode = "200", description = "Pedido criado com sucesso")
     @PostMapping
     public Pedido criar(
-            @Parameter(description = "Dados do pedido", required = true, schema = @Schema(implementation = Pedido.class))
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Dados do pedido",
+                required = true,
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Pedido.class),
+                    examples = @ExampleObject(
+                        value = "{\n" +
+                               "  \"cliente\": {\n" +
+                               "    \"id\": 1\n" +
+                               "  },\n" +
+                               "  \"veiculo\": {\n" +
+                               "    \"id\": 1\n" +
+                               "  }\n" +
+                               "}"
+                    )
+                )
+            )
             @RequestBody Pedido pedido) {
         return pedidoService.salvar(pedido);
     }
@@ -71,7 +89,21 @@ public class PedidoController {
     @PostMapping("/cliente/cpf/{cpf}")
     public ResponseEntity<Pedido> criarPorCpf(
             @Parameter(description = "CPF do cliente", required = true) @PathVariable String cpf,
-            @Parameter(description = "Dados do pedido", required = true, schema = @Schema(implementation = Pedido.class)) 
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Dados do pedido",
+                required = true,
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Pedido.class),
+                    examples = @ExampleObject(
+                        value = "{\n" +
+                               "  \"veiculo\": {\n" +
+                               "    \"id\": 1\n" +
+                               "  }\n" +
+                               "}"
+                    )
+                )
+            )
             @RequestBody Pedido pedido) {
         try {
             Pedido novoPedido = pedidoService.criarPedidoPorCpf(cpf, pedido);
@@ -89,7 +121,26 @@ public class PedidoController {
     @PutMapping("/{id}")
     public ResponseEntity<Pedido> atualizar(
             @Parameter(description = "ID do pedido", required = true) @PathVariable Long id,
-            @Parameter(description = "Dados atualizados do pedido", required = true) @RequestBody Pedido pedido) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Dados atualizados do pedido",
+                required = true,
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Pedido.class),
+                    examples = @ExampleObject(
+                        value = "{\n" +
+                               "  \"cliente\": {\n" +
+                               "    \"id\": 1\n" +
+                               "  },\n" +
+                               "  \"veiculo\": {\n" +
+                               "    \"id\": 2\n" +
+                               "  },\n" +
+                               "  \"aprovado\": true\n" +
+                               "}"
+                    )
+                )
+            )
+            @RequestBody Pedido pedido) {
         try {
             Pedido atualizado = pedidoService.atualizar(id, pedido);
             return ResponseEntity.ok(atualizado);

@@ -26,6 +26,7 @@ import aluguel_de_automoveis.aluguel_de_automoveis.services.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -93,7 +94,28 @@ public class ContratoController {
     @ApiResponse(responseCode = "201", description = "Contrato criado com sucesso")
     @PostMapping
     public ResponseEntity<Contrato> criar(
-            @Parameter(description = "Dados do contrato", required = true, schema = @Schema(implementation = Contrato.class))
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Dados do contrato",
+                required = true,
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Contrato.class),
+                    examples = @ExampleObject(
+                        value = "{\n" +
+                               "  \"tipo\": \"NORMAL\",\n" +
+                               "  \"automovel\": {\n" +
+                               "    \"id\": 1\n" +
+                               "  },\n" +
+                               "  \"cliente\": {\n" +
+                               "    \"id\": 1\n" +
+                               "  },\n" +
+                               "  \"proprietario\": {\n" +
+                               "    \"id\": 1\n" +
+                               "  }\n" +
+                               "}"
+                    )
+                )
+            )
             @RequestBody Contrato contrato) {
         Contrato novoContrato = contratoService.salvar(contrato);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoContrato);
@@ -106,7 +128,23 @@ public class ContratoController {
     })
     @PostMapping("/dto")
     public ResponseEntity<Contrato> criarComDTO(
-            @Parameter(description = "DTO do contrato", required = true, schema = @Schema(implementation = ContratoDTO.class))
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "DTO do contrato",
+                required = true,
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ContratoDTO.class),
+                    examples = @ExampleObject(
+                        value = "{\n" +
+                               "  \"tipo\": \"NORMAL\",\n" +
+                               "  \"automovelMatricula\": \"ABC1234\",\n" +
+                               "  \"clienteId\": 1,\n" +
+                               "  \"proprietarioId\": 1,\n" +
+                               "  \"pedidoId\": 1\n" +
+                               "}"
+                    )
+                )
+            )
             @RequestBody ContratoDTO dto) {
         try {
             Contrato novoContrato = contratoService.salvarComDTO(dto);
@@ -124,7 +162,29 @@ public class ContratoController {
     @PutMapping("/{id}")
     public ResponseEntity<Contrato> atualizar(
             @Parameter(description = "ID do contrato", required = true) @PathVariable Long id,
-            @Parameter(description = "Dados do contrato", required = true) @RequestBody Contrato contrato) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Dados do contrato",
+                required = true,
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Contrato.class),
+                    examples = @ExampleObject(
+                        value = "{\n" +
+                               "  \"tipo\": \"CREDITO\",\n" +
+                               "  \"automovel\": {\n" +
+                               "    \"id\": 2\n" +
+                               "  },\n" +
+                               "  \"cliente\": {\n" +
+                               "    \"id\": 1\n" +
+                               "  },\n" +
+                               "  \"proprietario\": {\n" +
+                               "    \"id\": 2\n" +
+                               "  }\n" +
+                               "}"
+                    )
+                )
+            )
+            @RequestBody Contrato contrato) {
         try {
             contrato.setId(id);
             Contrato contratoAtualizado = contratoService.atualizar(id, contrato);
@@ -142,7 +202,23 @@ public class ContratoController {
     @PutMapping("/{id}/dto")
     public ResponseEntity<Contrato> atualizarComDTO(
             @Parameter(description = "ID do contrato", required = true) @PathVariable Long id,
-            @Parameter(description = "DTO do contrato", required = true) @RequestBody ContratoDTO dto) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "DTO do contrato",
+                required = true,
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ContratoDTO.class),
+                    examples = @ExampleObject(
+                        value = "{\n" +
+                               "  \"tipo\": \"CREDITO\",\n" +
+                               "  \"automovelMatricula\": \"XYZ5678\",\n" +
+                               "  \"clienteId\": 1,\n" +
+                               "  \"proprietarioId\": 3\n" +
+                               "}"
+                    )
+                )
+            )
+            @RequestBody ContratoDTO dto) {
         try {
             Contrato contratoAtualizado = contratoService.atualizarComDTO(id, dto);
             return ResponseEntity.ok(contratoAtualizado);
@@ -195,7 +271,15 @@ public class ContratoController {
     public ResponseEntity<Contrato> criarContratoDePedido(
             @Parameter(description = "ID do pedido", required = true) @PathVariable Long pedidoId, 
             @Parameter(description = "ID do usuário (proprietário)", required = true) @PathVariable Long usuarioId,
-            @Parameter(description = "Tipo do contrato (NORMAL ou CREDITO)", required = true, schema = @Schema(type = "string", allowableValues = {"NORMAL", "CREDITO"})) 
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Tipo do contrato (NORMAL ou CREDITO)",
+                required = true,
+                content = @Content(
+                    mediaType = "text/plain",
+                    schema = @Schema(type = "string", allowableValues = {"NORMAL", "CREDITO"}),
+                    examples = @ExampleObject(value = "NORMAL")
+                )
+            )
             @RequestBody String tipoContrato) {
         try {
             Optional<Usuario> usuarioOpt = usuarioService.buscarPorId(usuarioId);
