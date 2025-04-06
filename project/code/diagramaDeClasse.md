@@ -23,7 +23,6 @@ class "Cliente" {
     - profissao: String 
     - rendimentosAuferidos: List<Rendimento> 
     - MAX_RENDIMENTOS_AUFERIDOS : const int = 3
-    - agentes: List<Agente> 
     + modificarPedido(Pedido pedido): void 
     + introduzirPedido(): void 
     + consultarPedido(Pedido pedido): Pedido 
@@ -53,15 +52,10 @@ class "Automovel" {
 
 class "Contrato" {
     - tipo: TipoContrato
-    - automovel : Automovel
-    - cliente: Cliente
-    - proprietario: Usuario
     + registrarPropriedade(Usuario usuario): void
 }
 
 class "Pedido" {
-    - cliente: Cliente
-    - veiculo : Veiculo
 }
 
 class "Empregador" {
@@ -72,12 +66,9 @@ class "Empregador" {
 
 class "Rendimento" {
     - valor: Double
-    - cliente : Cliente
-    - empregador: Empregador
 }
 
 class "Endereco"{
-    - cliente: Cliente
     - bairro : String
     - rua : String
     - numero : Integer
@@ -89,17 +80,18 @@ class "Endereco"{
 "Agente" <|-- "Banco"
 "Agente" <|-- "Empresa"
 
-"Cliente" -- "Pedido"
-"Cliente" -- "Endereco"
-"Automovel" -- "Pedido"
+"Cliente" "1" -- "*" "Endereco"
+"Cliente" "1" -- "*" "Rendimento"
+"Cliente" "1" -- "*" "Pedido"
+"Cliente" -- "*" "Agente" : "agentes\nassociados"
 
-"Contrato" -- "Usuario"
-"Contrato" -- "Automovel"
-"Contrato" -- "Cliente"
+"Rendimento" "*" -- "1" "Empregador"
+"Pedido" "*" -- "1" "Automovel"
+"Pedido" "1" -- "1" "Contrato"
 
-"Cliente" -- "Rendimento"
-"Empregador" -- "Rendimento"
-
+"Contrato" "*" -- "1" "Automovel"
+"Contrato" "*" -- "1" "Cliente"
+"Contrato" "*" -- "1" "Usuario" : "proprietário"
 @enduml
 
 
