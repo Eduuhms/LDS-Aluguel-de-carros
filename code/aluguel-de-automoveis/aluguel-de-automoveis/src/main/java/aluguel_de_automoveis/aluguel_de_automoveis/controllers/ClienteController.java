@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import aluguel_de_automoveis.aluguel_de_automoveis.models.Cliente;
 import aluguel_de_automoveis.aluguel_de_automoveis.models.Pedido;
+import aluguel_de_automoveis.aluguel_de_automoveis.models.Rendimento;
 import aluguel_de_automoveis.aluguel_de_automoveis.repositories.ClienteRepository;
 import aluguel_de_automoveis.aluguel_de_automoveis.services.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -294,5 +295,111 @@ public class ClienteController {
                     return ResponseEntity.ok(clienteService.salvar(cliente));
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @Operation(summary = "Listar rendimentos de um cliente", 
+               description = "Retorna todos os rendimentos de um cliente específico (limitado a " + Cliente.MAX_RENDIMENTOS_AUFERIDOS + " items)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Rendimentos encontrados com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content)
+    })
+    @GetMapping("/{clienteId}/rendimentos")
+    public ResponseEntity<List<Rendimento>> listarRendimentos(
+            @Parameter(description = "ID do cliente", example = "1", required = true) 
+            @PathVariable Long clienteId) {
+        List<Rendimento> rendimentos = clienteService.listarRendimentos(clienteId);
+        if (rendimentos.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(rendimentos);
+    }
+    
+    @Operation(summary = "Listar rendimentos de um cliente por CPF", 
+               description = "Retorna todos os rendimentos de um cliente com base no CPF fornecido (limitado a " + Cliente.MAX_RENDIMENTOS_AUFERIDOS + " items)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Rendimentos encontrados com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content)
+    })
+    @GetMapping("/cpf/{cpf}/rendimentos")
+    public ResponseEntity<List<Rendimento>> listarRendimentosPorCpf(
+            @Parameter(description = "CPF do cliente", example = "123.456.789-00", required = true) 
+            @PathVariable String cpf) {
+        List<Rendimento> rendimentos = clienteService.listarRendimentosPorCpf(cpf);
+        if (rendimentos.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(rendimentos);
+    }
+    
+    @Operation(summary = "Adicionar rendimento a um cliente", 
+               description = "Adiciona um novo rendimento à lista de rendimentos de um cliente. " +
+                           "Se o cliente já tiver " + Cliente.MAX_RENDIMENTOS_AUFERIDOS + " rendimentos, " +
+                           "o mais antigo será removido (FIFO).")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Rendimento adicionado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content)
+    })
+    @PostMapping("/{clienteId}/rendimentos")
+    public ResponseEntity<Cliente> adicionarRendimento(
+            @Parameter(description = "ID do cliente", example = "1", required = true) 
+            @PathVariable Long clienteId,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Dados do rendimento",
+                required = true,
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Rendimento.class),
+                    examples = @ExampleObject(
+                        value = "{\n" +
+                               "  \"valor\": 5000.0,\n" +
+                               "  \"empregador\": {\n" +
+                               "    \"id\": 1\n" +
+                               "  }\n" +
+                               "}"
+                    )
+                )
+            )
+            @RequestBody Rendimento rendimento) {
+        Cliente cliente = clienteService.adicionarRendimento(clienteId, rendimento);
+        if (cliente == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(cliente);
+    }
+    
+    @Operation(summary = "Adicionar rendimento a um cliente por CPF", 
+               description = "Adiciona um novo rendimento à lista de rendimentos de um cliente usando CPF como identificador. " +
+                           "Se o cliente já tiver " + Cliente.MAX_RENDIMENTOS_AUFERIDOS + " rendimentos, " +
+                           "o mais antigo será removido (FIFO).")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Rendimento adicionado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content)
+    })
+    @PostMapping("/cpf/{cpf}/rendimentos")
+    public ResponseEntity<Cliente> adicionarRendimentoPorCpf(
+            @Parameter(description = "CPF do cliente", example = "123.456.789-00", required = true) 
+            @PathVariable String cpf,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Dados do rendimento",
+                required = true,
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Rendimento.class),
+                    examples = @ExampleObject(
+                        value = "{\n" +
+                               "  \"valor\": 5000.0,\n" +
+                               "  \"empregador\": {\n" +
+                               "    \"id\": 1\n" +
+                               "  }\n" +
+                               "}"
+                    )
+                )
+            )
+            @RequestBody Rendimento rendimento) {
+        Cliente cliente = clienteService.adicionarRendimentoPorCpf(cpf, rendimento);
+        if (cliente == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(cliente);
     }
 }
