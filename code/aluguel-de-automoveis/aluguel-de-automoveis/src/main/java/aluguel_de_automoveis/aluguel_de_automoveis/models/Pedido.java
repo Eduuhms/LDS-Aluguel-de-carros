@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 
 @Data
@@ -20,4 +21,9 @@ public class Pedido {
     
     @ManyToOne
     private Automovel veiculo;
+    
+    @OneToOne(mappedBy = "pedido")
+    private Contrato contrato;
+    
+    private boolean aprovado = false;
 }

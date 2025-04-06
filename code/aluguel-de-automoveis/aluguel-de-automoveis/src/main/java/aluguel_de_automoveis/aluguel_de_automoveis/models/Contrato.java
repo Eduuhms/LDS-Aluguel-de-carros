@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 
 @Data
@@ -29,6 +30,9 @@ public class Contrato {
     
     @ManyToOne
     private Usuario proprietario;
+    
+    @OneToOne
+    private Pedido pedido;
     
     public void registrarPropriedade(Usuario usuario) {
         this.proprietario = usuario;

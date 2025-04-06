@@ -121,4 +121,23 @@ public class ContratoController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PostMapping("/pedido/{pedidoId}/usuario/{usuarioId}")
+    public ResponseEntity<Contrato> criarContratoDePedido(
+            @PathVariable Long pedidoId, 
+            @PathVariable Long usuarioId,
+            @RequestBody String tipoContrato) {
+        try {
+            Optional<Usuario> usuarioOpt = usuarioService.buscarPorId(usuarioId);
+            if (usuarioOpt.isPresent()) {
+                TipoContrato tipo = TipoContrato.valueOf(tipoContrato);
+                Contrato novoContrato = contratoService.criarContratoDePedido(pedidoId, tipo, usuarioOpt.get());
+                return ResponseEntity.status(HttpStatus.CREATED).body(novoContrato);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 }

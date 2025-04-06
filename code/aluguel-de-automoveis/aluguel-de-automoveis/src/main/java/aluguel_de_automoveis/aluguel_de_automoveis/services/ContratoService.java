@@ -11,10 +11,12 @@ import aluguel_de_automoveis.aluguel_de_automoveis.enums.TipoContrato;
 import aluguel_de_automoveis.aluguel_de_automoveis.models.Automovel;
 import aluguel_de_automoveis.aluguel_de_automoveis.models.Cliente;
 import aluguel_de_automoveis.aluguel_de_automoveis.models.Contrato;
+import aluguel_de_automoveis.aluguel_de_automoveis.models.Pedido;
 import aluguel_de_automoveis.aluguel_de_automoveis.models.Usuario;
 import aluguel_de_automoveis.aluguel_de_automoveis.repositories.AutomovelRepository;
 import aluguel_de_automoveis.aluguel_de_automoveis.repositories.ClienteRepository;
 import aluguel_de_automoveis.aluguel_de_automoveis.repositories.ContratoRepository;
+import aluguel_de_automoveis.aluguel_de_automoveis.repositories.PedidoRepository;
 import aluguel_de_automoveis.aluguel_de_automoveis.repositories.UsuarioRepository;
 
 @Service
@@ -31,6 +33,9 @@ public class ContratoService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private PedidoRepository pedidoRepository;
 
     public List<Contrato> listarTodos() {
         return contratoRepository.findAll();
@@ -87,6 +92,13 @@ public class ContratoService {
         contrato.setAutomovel(automovel);
         contrato.setCliente(cliente);
         contrato.setProprietario(proprietario);
+        
+        // Associar ao pedido se o pedidoId for fornecido
+        if (dto.getPedidoId() != null) {
+            Pedido pedido = pedidoRepository.findById(dto.getPedidoId())
+                    .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+            contrato.setPedido(pedido);
+        }
 
         return contrato;
     }
@@ -111,5 +123,19 @@ public class ContratoService {
             return contratoRepository.save(contrato);
         }
         return null;
+    }
+
+    public Contrato criarContratoDePedido(Long pedidoId, TipoContrato tipoContrato, Usuario proprietario) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+        
+        Contrato contrato = new Contrato();
+        contrato.setTipo(tipoContrato);
+        contrato.setAutomovel(pedido.getVeiculo());
+        contrato.setCliente(pedido.getCliente());
+        contrato.setProprietario(proprietario);
+        contrato.setPedido(pedido);
+        
+        return contratoRepository.save(contrato);
     }
 }

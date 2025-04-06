@@ -8,4 +8,5 @@ public class ContratoDTO {
     private String automovelMatricula;
     private Long clienteId;
     private Long proprietarioId;
+    private Long pedidoId;
 }
