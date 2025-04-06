@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import aluguel_de_automoveis.aluguel_de_automoveis.models.Automovel;
 import aluguel_de_automoveis.aluguel_de_automoveis.services.AutomovelService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/automoveis")
+@Tag(name = "Automóveis", description = "API para gerenciamento de automóveis")
 public class AutomovelController {
     
     @Autowired

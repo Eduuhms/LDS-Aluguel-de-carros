@@ -2,6 +2,7 @@ package aluguel_de_automoveis.aluguel_de_automoveis.controllers;
 
 import aluguel_de_automoveis.aluguel_de_automoveis.models.Banco;
 import aluguel_de_automoveis.aluguel_de_automoveis.services.BancoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/bancos")
+@Tag(name = "Bancos", description = "API para gerenciamento de bancos")
 public class BancoController {
     
     @Autowired
