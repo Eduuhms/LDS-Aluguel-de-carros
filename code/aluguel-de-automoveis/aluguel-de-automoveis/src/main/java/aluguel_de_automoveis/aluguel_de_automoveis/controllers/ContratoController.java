@@ -23,9 +23,17 @@ import aluguel_de_automoveis.aluguel_de_automoveis.models.Usuario;
 import aluguel_de_automoveis.aluguel_de_automoveis.services.ClienteService;
 import aluguel_de_automoveis.aluguel_de_automoveis.services.ContratoService;
 import aluguel_de_automoveis.aluguel_de_automoveis.services.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/contratos")
+@Tag(name = "Contratos", description = "API para gerenciamento de contratos de aluguel")
 public class ContratoController {
 
     @Autowired
@@ -37,25 +45,42 @@ public class ContratoController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Operation(summary = "Listar todos os contratos", description = "Retorna uma lista com todos os contratos cadastrados")
+    @ApiResponse(responseCode = "200", description = "Contratos encontrados com sucesso")
     @GetMapping
     public List<Contrato> listarTodos() {
         return contratoService.listarTodos();
     }
 
+    @Operation(summary = "Buscar contrato por ID", description = "Retorna um contrato específico com base no ID fornecido")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Contrato encontrado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Contrato não encontrado", content = @Content)
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<Contrato> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<Contrato> buscarPorId(
+            @Parameter(description = "ID do contrato", required = true) @PathVariable Long id) {
         return contratoService.buscarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Listar contratos por tipo", description = "Retorna uma lista de contratos do tipo especificado")
+    @ApiResponse(responseCode = "200", description = "Contratos encontrados com sucesso")
     @GetMapping("/tipo/{tipo}")
-    public List<Contrato> listarPorTipo(@PathVariable TipoContrato tipo) {
+    public List<Contrato> listarPorTipo(
+            @Parameter(description = "Tipo do contrato (NORMAL ou CREDITO)", required = true) @PathVariable TipoContrato tipo) {
         return contratoService.buscarPorTipo(tipo);
     }
 
+    @Operation(summary = "Listar contratos por cliente", description = "Retorna uma lista de contratos de um cliente específico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Contratos encontrados com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = @Content)
+    })
     @GetMapping("/cliente/{clienteId}")
-    public ResponseEntity<List<Contrato>> listarPorCliente(@PathVariable Long clienteId) {
+    public ResponseEntity<List<Contrato>> listarPorCliente(
+            @Parameter(description = "ID do cliente", required = true) @PathVariable Long clienteId) {
         Optional<Cliente> clienteOpt = clienteService.buscarPorId(clienteId);
         if (clienteOpt.isPresent()) {
             List<Contrato> contratos = contratoService.buscarPorCliente(clienteOpt.get());
@@ -64,14 +89,25 @@ public class ContratoController {
         return ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Criar um novo contrato", description = "Cria um novo contrato com os dados fornecidos")
+    @ApiResponse(responseCode = "201", description = "Contrato criado com sucesso")
     @PostMapping
-    public ResponseEntity<Contrato> criar(@RequestBody Contrato contrato) {
+    public ResponseEntity<Contrato> criar(
+            @Parameter(description = "Dados do contrato", required = true, schema = @Schema(implementation = Contrato.class))
+            @RequestBody Contrato contrato) {
         Contrato novoContrato = contratoService.salvar(contrato);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoContrato);
     }
 
+    @Operation(summary = "Criar contrato com DTO", description = "Cria um novo contrato a partir de um DTO")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Contrato criado com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content)
+    })
     @PostMapping("/dto")
-    public ResponseEntity<Contrato> criarComDTO(@RequestBody ContratoDTO dto) {
+    public ResponseEntity<Contrato> criarComDTO(
+            @Parameter(description = "DTO do contrato", required = true, schema = @Schema(implementation = ContratoDTO.class))
+            @RequestBody ContratoDTO dto) {
         try {
             Contrato novoContrato = contratoService.salvarComDTO(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoContrato);
@@ -80,8 +116,15 @@ public class ContratoController {
         }
     }
 
+    @Operation(summary = "Atualizar contrato", description = "Atualiza os dados de um contrato existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Contrato atualizado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Contrato não encontrado", content = @Content)
+    })
     @PutMapping("/{id}")
-    public ResponseEntity<Contrato> atualizar(@PathVariable Long id, @RequestBody Contrato contrato) {
+    public ResponseEntity<Contrato> atualizar(
+            @Parameter(description = "ID do contrato", required = true) @PathVariable Long id,
+            @Parameter(description = "Dados do contrato", required = true) @RequestBody Contrato contrato) {
         try {
             contrato.setId(id);
             Contrato contratoAtualizado = contratoService.atualizar(id, contrato);
@@ -91,8 +134,15 @@ public class ContratoController {
         }
     }
 
+    @Operation(summary = "Atualizar contrato com DTO", description = "Atualiza os dados de um contrato existente usando DTO")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Contrato atualizado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Contrato não encontrado", content = @Content)
+    })
     @PutMapping("/{id}/dto")
-    public ResponseEntity<Contrato> atualizarComDTO(@PathVariable Long id, @RequestBody ContratoDTO dto) {
+    public ResponseEntity<Contrato> atualizarComDTO(
+            @Parameter(description = "ID do contrato", required = true) @PathVariable Long id,
+            @Parameter(description = "DTO do contrato", required = true) @RequestBody ContratoDTO dto) {
         try {
             Contrato contratoAtualizado = contratoService.atualizarComDTO(id, dto);
             return ResponseEntity.ok(contratoAtualizado);
@@ -101,8 +151,14 @@ public class ContratoController {
         }
     }
 
+    @Operation(summary = "Excluir contrato", description = "Remove um contrato do sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Contrato excluído com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Contrato não encontrado", content = @Content)
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+    public ResponseEntity<Void> excluir(
+            @Parameter(description = "ID do contrato", required = true) @PathVariable Long id) {
         if (contratoService.buscarPorId(id).isPresent()) {
             contratoService.excluir(id);
             return ResponseEntity.noContent().build();
@@ -110,8 +166,15 @@ public class ContratoController {
         return ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Registrar proprietário", description = "Associa um usuário como proprietário de um contrato")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Proprietário registrado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Contrato ou usuário não encontrado", content = @Content)
+    })
     @PutMapping("/{contratoId}/registrar-propriedade/{usuarioId}")
-    public ResponseEntity<Contrato> registrarPropriedade(@PathVariable Long contratoId, @PathVariable Long usuarioId) {
+    public ResponseEntity<Contrato> registrarPropriedade(
+            @Parameter(description = "ID do contrato", required = true) @PathVariable Long contratoId,
+            @Parameter(description = "ID do usuário (proprietário)", required = true) @PathVariable Long usuarioId) {
         Optional<Usuario> usuarioOpt = usuarioService.buscarPorId(usuarioId);
         if (usuarioOpt.isPresent()) {
             Contrato contrato = contratoService.registrarPropriedade(contratoId, usuarioOpt.get());
@@ -121,11 +184,18 @@ public class ContratoController {
         }
         return ResponseEntity.notFound().build();
     }
-
+    
+    @Operation(summary = "Criar contrato a partir de pedido", description = "Cria um novo contrato baseado em um pedido existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Contrato criado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Pedido ou usuário não encontrado", content = @Content),
+        @ApiResponse(responseCode = "400", description = "Tipo de contrato inválido", content = @Content)
+    })
     @PostMapping("/pedido/{pedidoId}/usuario/{usuarioId}")
     public ResponseEntity<Contrato> criarContratoDePedido(
-            @PathVariable Long pedidoId, 
-            @PathVariable Long usuarioId,
+            @Parameter(description = "ID do pedido", required = true) @PathVariable Long pedidoId, 
+            @Parameter(description = "ID do usuário (proprietário)", required = true) @PathVariable Long usuarioId,
+            @Parameter(description = "Tipo do contrato (NORMAL ou CREDITO)", required = true, schema = @Schema(type = "string", allowableValues = {"NORMAL", "CREDITO"})) 
             @RequestBody String tipoContrato) {
         try {
             Optional<Usuario> usuarioOpt = usuarioService.buscarPorId(usuarioId);
