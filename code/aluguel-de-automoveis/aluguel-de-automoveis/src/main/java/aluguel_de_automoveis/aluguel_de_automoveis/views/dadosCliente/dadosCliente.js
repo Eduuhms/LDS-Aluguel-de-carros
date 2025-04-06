@@ -45,13 +45,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     async function carregarAlugueis(clienteId) {
         try {
             // Carrega pedidos
-            const responsePedidos = await fetch(`http://localhost:8080/api/pedidos/${clienteId}`);
+            const responsePedidos = await fetch(`http://localhost:8080/api/clientes/${clienteId}/pedidos`);
             if (!responsePedidos.ok) throw new Error('Erro ao carregar pedidos');
             const pedidos = await responsePedidos.json();
             const pedidosArray = Array.isArray(pedidos) ? pedidos : [pedidos];
             
             // Carrega contratos
-            const responseContratos = await fetch(`http://localhost:8080/api/contratos/${clienteId}`);
+            const responseContratos = await fetch(`http://localhost:8080/api/contratos/cliente/${clienteId}`);
             if (!responseContratos.ok) throw new Error('Erro ao carregar contratos');
             const contratos = await responseContratos.json();
             const contratosArray = Array.isArray(contratos) ? contratos : [contratos];

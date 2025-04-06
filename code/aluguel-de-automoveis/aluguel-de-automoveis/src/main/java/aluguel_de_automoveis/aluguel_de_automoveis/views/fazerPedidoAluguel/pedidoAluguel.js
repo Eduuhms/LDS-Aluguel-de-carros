@@ -96,50 +96,84 @@ document.addEventListener('DOMContentLoaded', async function() {
         formAluguel.reset();
     }
 
-    // Eventos
-    closeModal.addEventListener('click', fecharModal);
-    btnCancelarAluguel.addEventListener('click', fecharModal);
-
-    // Finalizar aluguel
+    // Finalizar aluguel - ATUALIZADO PARA GERAR PEDIDO OU CONTRATO
     formAluguel.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        const dadosAluguel = {
-            automovelId: document.getElementById('automovelId').value,
-            clienteId: clienteLogado.id,
-            formaPagamento: document.querySelector('input[name="pagamento"]:checked').value,
-            status: document.querySelector('input[name="pagamento"]:checked').value === 'CREDITO' 
-                   ? 'AGUARDANDO_APROVACAO' 
-                   : 'AGUARDANDO_PAGAMENTO'
-        };
-
+        const formaPagamento = document.querySelector('input[name="pagamento"]:checked').value;
+        const automovelId = document.getElementById('automovelId').value;
+        
         try {
             // Primeiro marcar o carro como alugado
             const responseMarcar = await fetch(
-                `http://localhost:8080/api/automoveis/${dadosAluguel.automovelId}/marcar-como-alugado`, 
+                `http://localhost:8080/api/automoveis/${automovelId}/marcar-como-alugado`, 
                 { method: 'PUT' }
             );
             
             if (!responseMarcar.ok) throw new Error('Erro ao marcar carro como alugado');
             
-            // Depois criar o registro de aluguel
-            const responseAluguel = await fetch('http://localhost:8080/api/alugueis', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dadosAluguel)
-            });
+            if (formaPagamento === 'CREDITO') {
+                // Se for crédito, cria um pedido
+                const pedidoData = {
+                    veiculo: { id: automovelId },
+                    cliente: { id: clienteLogado.id },
+                    aprovado: false
+                };
+                
+                const responsePedido = await fetch('http://localhost:8080/api/pedidos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(pedidoData)
+                });
+                
+                if (!responsePedido.ok) throw new Error('Erro ao criar pedido');
+                
+                alert('Pedido de aluguel criado com sucesso! Status: Aguardando aprovação');
+                
+            } else {
+                // Se for à vista, cria um contrato diretamente
+                const contratoData = {
+                    tipo: 'NORMAL',
+                    automovel: { id: automovelId },
+                    cliente: { id: clienteLogado.id },
+                    // Obs: Você precisará definir o proprietário aqui ou no backend
+                    proprietario: { id: 1 } // ID do proprietário padrão - ajuste conforme necessário
+                };
+                
+                const responseContrato = await fetch('http://localhost:8080/api/contratos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(contratoData)
+                });
+                
+                if (!responseContrato.ok) throw new Error('Erro ao criar contrato');
+                
+                alert('Contrato de aluguel criado com sucesso! Status: Ativo');
+            }
             
-            if (!responseAluguel.ok) throw new Error('Erro ao registrar aluguel');
-            
-            alert('Aluguel solicitado com sucesso!');
             fecharModal();
-            carregarCarrosDisponiveis(); // Atualiza a lista de carros
-            window.location.href = '../hub/hub.html'; // Volta para o hub
+            carregarCarrosDisponiveis();
+            window.location.href = '../hub/hub.html';
+            
         } catch (error) {
             console.error('Erro:', error);
             alert('Erro ao finalizar aluguel: ' + error.message);
+            
+            // Em caso de erro, marca o carro como disponível novamente
+            try {
+                await fetch(
+                    `http://localhost:8080/api/automoveis/${automovelId}/marcar-como-disponivel`, 
+                    { method: 'PUT' }
+                );
+            } catch (err) {
+                console.error('Erro ao reverter status do carro:', err);
+            }
         }
     });
+
+    // Eventos
+    closeModal.addEventListener('click', fecharModal);
+    btnCancelarAluguel.addEventListener('click', fecharModal);
 
     // Fechar modal ao clicar fora
     window.addEventListener('click', function(e) {
